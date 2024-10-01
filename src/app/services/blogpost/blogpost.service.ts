@@ -8,7 +8,6 @@ import { IPost } from '../../models/post';
   providedIn: 'root'
 })
 export class BlogpostService {
-
   private postsCollection: AngularFirestoreCollection<IPost>;
   private commentsCollection: AngularFirestoreCollection<IComment>;
 
@@ -18,45 +17,36 @@ export class BlogpostService {
   }
 
   // CRUD operations for posts
-
-  //getting all post
   getPosts(): Observable<IPost[]> {
     return this.postsCollection.snapshotChanges().pipe(
       map(actions => actions.map(a => {
         const data = a.payload.doc.data() as IPost;
         const id = a.payload.doc.id;
-        return { id, ...data };
+        return { ...data, id };
       }))
     );
   }
 
-
-  //getting a single post
   getPost(id: string): Observable<IPost | undefined> {
-    return this.postsCollection.doc<IPost>(id).valueChanges().pipe(
-      map(post => post ? { ...post, id } : undefined)
-    );
+    return this.postsCollection.doc<IPost>(id).valueChanges({ idField: 'id' });
   }
 
-
-  //adding a post
   addPost(post: Omit<IPost, 'id'>): Promise<DocumentReference<IPost>> {
     return this.postsCollection.add(post);
   }
 
-
-//updating a post
   updatePost(id: string, post: Partial<IPost>): Promise<void> {
-    return this.postsCollection.doc(id).update(post);
+    return this.postsCollection.doc(id).update({
+      ...post,
+      updatedAt: new Date()
+    });
   }
 
-
-  //deleting a post
   deletePost(id: string): Promise<void> {
     return this.postsCollection.doc(id).delete();
   }
 
-  // Real-time listener for comments
+  // CRUD operations for comments
   getCommentsForPost(postId: string): Observable<IComment[]> {
     return this.firestore.collection<IComment>('comments', ref => 
       ref.where('postId', '==', postId).orderBy('createdAt', 'desc')
@@ -64,16 +54,24 @@ export class BlogpostService {
       map(actions => actions.map(a => {
         const data = a.payload.doc.data() as IComment;
         const id = a.payload.doc.id;
-        return { id, ...data };
+        return { ...data, id };
       }))
     );
   }
 
-
-  //adding a new comment
   addComment(comment: Omit<IComment, 'id'>): Promise<DocumentReference<IComment>> {
     return this.commentsCollection.add(comment);
   }
 
+  updateComment(id: string, comment: Partial<IComment>): Promise<void> {
+    return this.commentsCollection.doc(id).update({
+      ...comment,
+      updatedAt: new Date()
+    });
+  }
+
+  deleteComment(id: string): Promise<void> {
+    return this.commentsCollection.doc(id).delete();
+  }
 
 }
