@@ -43,5 +43,19 @@ export class LoginComponent {
     }
   }
 
+  googleSignIn(): void {
+    this.authService.googleSignIn()
+      .subscribe({
+        next: (result) => {
+          this.message = result.message;
+          this.isError = !result.success;
+        },
+        error: (error) => {
+          this.message = error.message;
+          this.isError = true;
+        }
+      });
+  }
+
 
 }
