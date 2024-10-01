@@ -1,0 +1,19 @@
+@if (user) {
+    <div class="profile-container">
+      <h2>Welcome, {{ user.displayName || user.email }}</h2>
+      <p>Email: {{ user.email }}</p>
+      
+      @if (user.photoURL) {
+        <img [src]="user.photoURL" alt="Profile Picture" class="profile-picture">
+      }
+
+      <h3>User Information</h3>
+      <ul>
+        @for (info of userInfo; track info.key) {
+          <li>{{ info.key }}: {{ info.value }}</li>
+        }
+      </ul>
+
+      <button (click)="logout()">Logout</button>
+    </div>
+  }
