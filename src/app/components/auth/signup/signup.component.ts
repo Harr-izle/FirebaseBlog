@@ -7,9 +7,9 @@ import { RouterLink } from '@angular/router';
 @Component({
   selector: 'app-signup',
   standalone: true,
-  imports: [ReactiveFormsModule,CommonModule,RouterLink],
+  imports: [ReactiveFormsModule, CommonModule, RouterLink],
   templateUrl: './signup.component.html',
-  styleUrl: './signup.component.css'
+  styleUrls: ['./signup.component.css']
 })
 export class SignupComponent {
   form!: FormGroup;
@@ -21,13 +21,20 @@ export class SignupComponent {
   ngOnInit(): void {
     this.form = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(20)]]
-    });
+      password: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(20)]],
+      confirmPassword: ['', [Validators.required]]  // Added confirm password field
+    }, { validators: this.passwordMatchValidator });  // Custom validator for password matching
+  }
+
+  // Custom validator to check if password and confirmPassword match
+  passwordMatchValidator(form: FormGroup) {
+    return form.get('password')?.value === form.get('confirmPassword')?.value 
+      ? null : { mismatch: true };
   }
 
   signUp(): void {
     if (this.form.valid) {
-      this.authService.register(this.form.value.email, this.form.value.password)
+      this.authService.register(this.form.value.email, this.form.value.password, this.form.value.confirmPassword)
         .subscribe({
           next: (result) => {
             this.message = result.message;
@@ -43,6 +50,4 @@ export class SignupComponent {
         });
     }
   }
-
-
 }

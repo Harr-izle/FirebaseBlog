@@ -27,28 +27,34 @@ export class AuthService {
 
   }
 
-
-  //registration
-  register(email: string, password: string): Observable<AuthResult> {
-    return from(createUserWithEmailAndPassword(this.firebaseAuth, email, password)).pipe(
-      map(userCredential => {
-        this.router.navigate(['login']);
-        return {
-          success: true,
-          message: "Registration successful! Please log in.",
-          user: userCredential.user
-        };
-      }),
-      catchError(error => {
-        console.error("Registration failed:", error);
-        return throwError(() => ({
-          success: false,
-          message: "Registration failed. Please try again."
-        }));
-      })
-    );
+ // Registration with confirm password
+ register(email: string, password: string, confirmPassword: string): Observable<AuthResult> {
+  // Check if passwords match
+  if (password !== confirmPassword) {
+    return throwError(() => ({
+      success: false,
+      message: "Passwords do not match."
+    }));
   }
 
+  return from(createUserWithEmailAndPassword(this.firebaseAuth, email, password)).pipe(
+    map(userCredential => {
+      this.router.navigate(['login']);
+      return {
+        success: true,
+        message: "Registration successful! Please log in.",
+        user: userCredential.user
+      };
+    }),
+    catchError(error => {
+      console.error("Registration failed:", error);
+      return throwError(() => ({
+        success: false,
+        message: "Registration failed. Please try again."
+      }));
+    })
+  );
+}
 
 //login
   login(email: string, password: string): Observable<AuthResult> {
