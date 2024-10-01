@@ -1,8 +1,10 @@
 import { inject, Injectable } from '@angular/core';
-import { Auth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, UserCredential } from '@angular/fire/auth';
+import { Auth, signOut, onAuthStateChanged, User, updateProfile, GoogleAuthProvider, signInWithPopup, sendPasswordResetEmail } from '@angular/fire/auth';
+import { Storage, ref, uploadBytesResumable, getDownloadURL } from '@angular/fire/storage';
 import { Router } from '@angular/router';
-import { Observable, from, throwError } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
+import { Observable, from, throwError, BehaviorSubject } from 'rxjs';
+import { catchError, map, tap } from 'rxjs/operators';
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, UserCredential } from 'firebase/auth';
 
 interface AuthResult {
   success: boolean;
@@ -15,13 +17,22 @@ interface AuthResult {
 })
 export class AuthService {
   firebaseAuth = inject(Auth);
+  currentUserSubject: BehaviorSubject<User | null> = new BehaviorSubject<User | null>(null);
+  storage: Storage = inject(Storage);
 
-  constructor(private router: Router) { }
+  constructor(private router: Router) { 
+    onAuthStateChanged(this.firebaseAuth, (user) => {
+      this.currentUserSubject.next(user);
+    });
 
+  }
+
+
+  //registration
   register(email: string, password: string): Observable<AuthResult> {
     return from(createUserWithEmailAndPassword(this.firebaseAuth, email, password)).pipe(
       map(userCredential => {
-        this.router.navigate(['/login']);
+        this.router.navigate(['login']);
         return {
           success: true,
           message: "Registration successful! Please log in.",
@@ -38,10 +49,12 @@ export class AuthService {
     );
   }
 
+
+//login
   login(email: string, password: string): Observable<AuthResult> {
     return from(signInWithEmailAndPassword(this.firebaseAuth, email, password)).pipe(
       map(userCredential => {
-        this.router.navigate(['/']);
+        this.router.navigate(['profile']);
         return {
           success: true,
           message: "Login successful! Welcome back.",
@@ -58,11 +71,13 @@ export class AuthService {
     );
   }
 
+
+  //Sigin with googgle
   googleSignIn(): Observable<AuthResult> {
     const provider = new GoogleAuthProvider();
     return from(signInWithPopup(this.firebaseAuth, provider)).pipe(
       map(userCredential => {
-        this.router.navigate(['/']);
+        this.router.navigate(['profile']);
         return {
           success: true,
           message: "Google sign-in successful! Welcome.",
@@ -78,4 +93,43 @@ export class AuthService {
       })
     );
   }
+
+  //user profile
+  getCurrentUser(): Observable<User | null> {
+    return this.currentUserSubject.asObservable();
+  }
+
+  logout(): Observable<void> {
+    return from(signOut(this.firebaseAuth)).pipe(
+      map(() => {
+        this.router.navigate(['/login']);
+      }),
+      catchError(error => {
+        console.error("Logout failed:", error);
+        return throwError(() => ({
+          success: false,
+          message: "Logout failed. Please try again."
+        }));
+      })
+    );
+  }
+
+  //forgot password
+forgotPassword(email: string): Observable<AuthResult> {
+  return from(sendPasswordResetEmail(this.firebaseAuth, email)).pipe(
+    map(() => ({
+      success: true,
+      message: "Password reset email sent. Please check your inbox."
+    })),
+    catchError(error => {
+      console.error("Password reset failed:", error);
+      return throwError(() => ({
+        success: false,
+        message: "Failed to send password reset email. Please try again."
+      }));
+    })
+  );
 }
+
+}
+
