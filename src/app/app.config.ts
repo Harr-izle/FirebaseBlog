@@ -1,4 +1,4 @@
-import { ApplicationConfig } from '@angular/core';
+import { ApplicationConfig, isDevMode } from '@angular/core';
 import { provideRouter } from '@angular/router';
 
 import { routes } from './app.routes';
@@ -27,13 +27,13 @@ import {
   provideRemoteConfig,
 } from '@angular/fire/remote-config';
 import { getVertexAI, provideVertexAI } from '@angular/fire/vertexai-preview';
+import { provideServiceWorker } from '@angular/service-worker';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideRouter(routes),
     provideClientHydration(),
-    provideFirebaseApp(() =>
-      initializeApp({
+    provideFirebaseApp(() => initializeApp({
         projectId: 'fireblog-2da5b',
         appId: '1:61847321071:web:9d6dc58fc83cd8fac95e1a',
         storageBucket: 'fireblog-2da5b.appspot.com',
@@ -41,8 +41,7 @@ export const appConfig: ApplicationConfig = {
         authDomain: 'fireblog-2da5b.firebaseapp.com',
         messagingSenderId: '61847321071',
         measurementId: 'G-HZ1LLMBDZF',
-      })
-    ),
+    })),
     provideAuth(() => getAuth()),
     provideAnalytics(() => getAnalytics()),
     ScreenTrackingService,
@@ -64,5 +63,9 @@ export const appConfig: ApplicationConfig = {
     provideStorage(() => getStorage()),
     provideRemoteConfig(() => getRemoteConfig()),
     provideVertexAI(() => getVertexAI()),
-  ],
+    provideServiceWorker('ngsw-worker.js', {
+        enabled: !isDevMode(),
+        registrationStrategy: 'registerWhenStable:30000'
+    })
+],
 };
