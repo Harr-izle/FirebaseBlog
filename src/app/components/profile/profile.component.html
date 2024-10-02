@@ -1,19 +1,26 @@
-@if (user) {
-    <div class="profile-container">
-      <h2>Welcome, {{ user.displayName || user.email }}</h2>
-      <p>Email: {{ user.email }}</p>
-      
-      @if (user.photoURL) {
-        <img [src]="user.photoURL" alt="Profile Picture" class="profile-picture">
-      }
+<div class="profile-container">
+  <h2>Welcome, {{ (user$ | async)?.displayName || (user$ | async)?.email }}</h2>
+  <p>Email: {{ (user$ | async)?.email }}</p>
+  
 
-      <h3>User Information</h3>
-      <ul>
-        @for (info of userInfo; track info.key) {
-          <li>{{ info.key }}: {{ info.value }}</li>
-        }
-      </ul>
+  <h3>User Information</h3>
+  <ul>
+    @for (info of userInfo; track info.key) {
+      <li>{{ info.key }}: {{ info.value }}</li>
+    }
+  </ul>
 
-      <button (click)="logout()">Logout</button>
-    </div>
+  <h3>Your Posts</h3>
+  @if (userPosts$ | async; as posts) {
+    @for (post of posts; track post.id) {
+      <div class="post-card">
+        <h4>{{ post.title }}</h4>
+        <a [routerLink]="['/post', post.id]">Read More</a>
+      </div>
+    }
+  } @else {
+    <p>You haven't created any posts yet.</p>
   }
+
+  <button (click)="logout()">Logout</button>
+</div>

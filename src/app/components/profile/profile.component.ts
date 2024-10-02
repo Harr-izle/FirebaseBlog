@@ -1,32 +1,43 @@
 import { Component } from '@angular/core';
-import {Router} from '@angular/router';
+import {Router, RouterLink} from '@angular/router';
 
 import { AuthService } from '../../services/auth/auth.service';
+import { Observable, map } from 'rxjs';
+import { IPost } from '../../models/post';
+import { BlogpostService } from '../../services/blogpost/blogpost.service';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [],
+  imports: [CommonModule,RouterLink],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.css'
 })
 export class ProfileComponent {
-
-  user: any;
+  user$: Observable<any>;
   userInfo: { key: string, value: string }[] = [];
+  userPosts$: Observable<IPost[]>;
 
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(
+    private authService: AuthService,
+    private blogService: BlogpostService,
+    private router: Router
+  ) {
+    this.user$ = this.authService.getCurrentUser();
+    this.userPosts$ = new Observable<IPost[]>();
+  }
 
   ngOnInit() {
-    this.authService.getCurrentUser().subscribe(user => {
+    this.user$.subscribe((user: { uid: string;  }) => {
       if (user) {
-        this.user = user;
         this.userInfo = [
           { key: 'UID', value: user.uid },
-          { key: 'Email Verified', value: user.emailVerified ? 'Yes' : 'No' },
-          { key: 'Account Created', value: user.metadata.creationTime || 'Unknown' },
-          { key: 'Last Sign In', value: user.metadata.lastSignInTime || 'Unknown' }
+         
         ];
+        this.userPosts$ = this.blogService.getPosts().pipe(
+          map((posts: any[]) => posts.filter((post: { authorId: any; }) => post.authorId === user.uid))
+        );
       } else {
         this.router.navigate(['/login']);
       }
@@ -43,5 +54,6 @@ export class ProfileComponent {
       }
     });
   }
+  }
 
-}
+
