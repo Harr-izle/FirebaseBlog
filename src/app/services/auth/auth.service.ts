@@ -60,7 +60,7 @@ export class AuthService {
   login(email: string, password: string): Observable<AuthResult> {
     return from(signInWithEmailAndPassword(this.firebaseAuth, email, password)).pipe(
       map(userCredential => {
-        this.router.navigate(['profile']);
+        this.router.navigate(['post-list']);
         return {
           success: true,
           message: "Login successful! Welcome back.",
@@ -83,7 +83,7 @@ export class AuthService {
     const provider = new GoogleAuthProvider();
     return from(signInWithPopup(this.firebaseAuth, provider)).pipe(
       map(userCredential => {
-        this.router.navigate(['profile']);
+        this.router.navigate(['post-list']);
         return {
           success: true,
           message: "Google sign-in successful! Welcome.",
