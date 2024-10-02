@@ -1,0 +1,33 @@
+<div class="posts-container">
+  <h2>All Posts</h2>
+  
+  @if (currentUserId) {
+    <form [formGroup]="postForm" (ngSubmit)="createPost()">
+      <input formControlName="title" placeholder="Post Title">
+      <textarea formControlName="content" placeholder="Post Content"></textarea>
+      <button type="submit" [disabled]="!postForm.valid">Create Post</button>
+    </form>
+  }
+
+  @if (postsWithComments$ | async; as posts) {
+    @for (post of posts; track post.id) {
+      <div class="post-card">
+        <h3>{{ post.title }}</h3>
+        <p>{{ post.content | slice:0:100 }}...</p>
+        <div class="post-meta">
+          <span>By: {{ post.authorName }}</span>
+          <span>Created: {{ post.createdAt | date }}</span>
+          <span>Comments: {{ post.commentCount }}</span>
+        </div>
+        <div class="post-actions">
+          <a [routerLink]="['/post', post.id]">Read More</a>
+        </div>
+      </div>
+    }
+  } @else {
+    <p>Loading posts...</p>
+  }
+</div>
+<button (click)="navigateToProfile()">
+  <i class="fas fa-user"></i> My Profile
+</button>
