@@ -1,0 +1,29 @@
+<div class="post-container">
+  @if (post$ | async; as post) {
+    @if (isEditing) {
+      <form [formGroup]="editForm" (ngSubmit)="updatePost()">
+        <input formControlName="title" placeholder="Title">
+        <textarea formControlName="content" placeholder="Content"></textarea>
+        <button type="submit">Update Post</button>
+        <button type="button" (click)="cancelEdit()">Cancel</button>
+      </form>
+    } @else {
+      <h2>{{ post.title }}</h2>
+      <p>{{ post.content }}</p>
+      <div class="post-meta">
+        <span>By: {{ post.authorName }}</span>
+        <span>Created: {{ post.createdAt  }}</span>
+        <span>Updated: {{ post.updatedAt }}</span>
+      </div>
+      @if (currentUserId === post.authorId) {
+        <div class="post-actions">
+          <button (click)="startEdit()">Edit</button>
+          <button (click)="deletePost()">Delete</button>
+        </div>
+      }
+    }
+    <app-comment [postId]="post.id!"></app-comment>
+  } @else {
+    <p>Loading post...</p>
+  }
+</div>
