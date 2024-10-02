@@ -1,9 +1,9 @@
 export interface IComment {
-    id?: string,
-    postId: string,
-    authorId: string,
-    content: string,
-    createdAt: Date,
-    updatedAt: Date
-
-}
+    id?: string;
+    postId: string;
+    content: string;
+    authorId: string;
+    authorName: string;
+    createdAt: Date;
+    updatedAt: Date;
+  }
