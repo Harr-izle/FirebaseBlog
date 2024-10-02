@@ -1,77 +1,105 @@
 import { Injectable } from '@angular/core';
-import { AngularFirestore, AngularFirestoreCollection, DocumentReference } from '@angular/fire/compat/firestore';
-import { Observable, map } from 'rxjs';
-import { IComment } from '../../models/comment';
+import { Firestore, collection, collectionData, doc, docData, addDoc, updateDoc, deleteDoc, query, where, orderBy, Timestamp } from '@angular/fire/firestore';
+import { Observable, from } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { IPost } from '../../models/post';
+import { IComment } from '../../models/comment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class BlogpostService {
-  private postsCollection: AngularFirestoreCollection<IPost>;
-  private commentsCollection: AngularFirestoreCollection<IComment>;
+  constructor(private firestore: Firestore) {}
 
-  constructor(private firestore: AngularFirestore) {
-    this.postsCollection = this.firestore.collection<IPost>('posts');
-    this.commentsCollection = this.firestore.collection<IComment>('comments');
+  private convertTimestamps<T extends { createdAt?: any; updatedAt?: any }>(item: T): T {
+    return {
+      ...item,
+      createdAt: item.createdAt instanceof Timestamp ? item.createdAt.toDate() : item.createdAt,
+      updatedAt: item.updatedAt instanceof Timestamp ? item.updatedAt.toDate() : item.updatedAt
+    };
   }
 
-  // CRUD operations for posts
   getPosts(): Observable<IPost[]> {
-    return this.postsCollection.snapshotChanges().pipe(
-      map(actions => actions.map(a => {
-        const data = a.payload.doc.data() as IPost;
-        const id = a.payload.doc.id;
-        return { ...data, id };
-      }))
-    );
+    const postsCollection = collection(this.firestore, 'posts');
+    return collectionData(postsCollection, { idField: 'id' }).pipe(
+      map(posts => posts.map(post => this.convertTimestamps(post as IPost)))
+    ) as Observable<IPost[]>;
   }
 
   getPost(id: string): Observable<IPost | undefined> {
-    return this.postsCollection.doc<IPost>(id).valueChanges({ idField: 'id' });
+    const postDoc = doc(this.firestore, `posts/${id}`);
+    return docData(postDoc, { idField: 'id' }).pipe(
+      map(post => post ? this.convertTimestamps(post as IPost) : undefined)
+    ) as Observable<IPost | undefined>;
   }
 
-  addPost(post: Omit<IPost, 'id'>): Promise<DocumentReference<IPost>> {
-    return this.postsCollection.add(post);
-  }
-
-  updatePost(id: string, post: Partial<IPost>): Promise<void> {
-    return this.postsCollection.doc(id).update({
+  addPost(post: Omit<IPost, 'id' | 'createdAt' | 'updatedAt'>): Observable<string> {
+    const postsCollection = collection(this.firestore, 'posts');
+    const newPost = {
       ...post,
-      updatedAt: new Date()
-    });
-  }
-
-  deletePost(id: string): Promise<void> {
-    return this.postsCollection.doc(id).delete();
-  }
-
-  // CRUD operations for comments
-  getCommentsForPost(postId: string): Observable<IComment[]> {
-    return this.firestore.collection<IComment>('comments', ref => 
-      ref.where('postId', '==', postId).orderBy('createdAt', 'desc')
-    ).snapshotChanges().pipe(
-      map(actions => actions.map(a => {
-        const data = a.payload.doc.data() as IComment;
-        const id = a.payload.doc.id;
-        return { ...data, id };
-      }))
+      createdAt: Timestamp.now(),
+      updatedAt: Timestamp.now()
+    };
+    return from(addDoc(postsCollection, newPost)).pipe(
+      map(docRef => docRef.id)
     );
   }
 
-  addComment(comment: Omit<IComment, 'id'>): Promise<DocumentReference<IComment>> {
-    return this.commentsCollection.add(comment);
+  updatePost(id: string, post: Partial<Omit<IPost, 'id' | 'createdAt' | 'updatedAt'>>): Observable<void> {
+    const postDoc = doc(this.firestore, `posts/${id}`);
+    const updatedPost = {
+      ...post,
+      updatedAt: Timestamp.now()
+    };
+    return from(updateDoc(postDoc, updatedPost));
   }
 
-  updateComment(id: string, comment: Partial<IComment>): Promise<void> {
-    return this.commentsCollection.doc(id).update({
+  deletePost(id: string): Observable<void> {
+    const postDoc = doc(this.firestore, `posts/${id}`);
+    return from(deleteDoc(postDoc));
+  }
+
+  getCommentsForPost(postId: string): Observable<IComment[]> {
+    const commentsCollection = collection(this.firestore, 'comments');
+    const commentsQuery = query(commentsCollection, 
+      where('postId', '==', postId),
+      orderBy('createdAt', 'desc')
+    );
+    return collectionData(commentsQuery, { idField: 'id' }).pipe(
+      map(comments => comments.map(comment => this.convertTimestamps(comment as IComment)))
+    ) as Observable<IComment[]>;
+  }
+
+  getAllComments(): Observable<IComment[]> {
+    const commentsCollection = collection(this.firestore, 'comments');
+    return collectionData(commentsCollection, { idField: 'id' }).pipe(
+      map(comments => comments.map(comment => this.convertTimestamps(comment as IComment)))
+    ) as Observable<IComment[]>;
+  }
+
+  addComment(comment: Omit<IComment, 'id' | 'createdAt' | 'updatedAt'>): Observable<string> {
+    const commentsCollection = collection(this.firestore, 'comments');
+    const newComment = {
       ...comment,
-      updatedAt: new Date()
-    });
+      createdAt: Timestamp.now(),
+      updatedAt: Timestamp.now()
+    };
+    return from(addDoc(commentsCollection, newComment)).pipe(
+      map(docRef => docRef.id)
+    );
   }
 
-  deleteComment(id: string): Promise<void> {
-    return this.commentsCollection.doc(id).delete();
+  updateComment(id: string, comment: Partial<Omit<IComment, 'id' | 'createdAt' | 'updatedAt'>>): Observable<void> {
+    const commentDoc = doc(this.firestore, `comments/${id}`);
+    const updatedComment = {
+      ...comment,
+      updatedAt: Timestamp.now()
+    };
+    return from(updateDoc(commentDoc, updatedComment));
   }
 
+  deleteComment(id: string): Observable<void> {
+    const commentDoc = doc(this.firestore, `comments/${id}`);
+    return from(deleteDoc(commentDoc));
+  }
 }
