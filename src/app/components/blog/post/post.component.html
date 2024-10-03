@@ -1,11 +1,20 @@
+<nav>
+  <h6>Q-Post</h6>
+  <div (click)="navigateToProfile()">
+    <i class="fa fa-user" aria-hidden="true"></i>
+  </div>
+</nav>
+
 <div class="post-container">
   @if (post$ | async; as post) {
     @if (isEditing) {
       <form [formGroup]="editForm" (ngSubmit)="updatePost()">
         <input formControlName="title" placeholder="Title">
         <textarea formControlName="content" placeholder="Content"></textarea>
-        <button type="submit">Update Post</button>
-        <button type="button" (click)="cancelEdit()">Cancel</button>
+       <div class="buttons">
+        <button class="btn-edit" type="submit">Update Post</button>
+        <button class="btn-cancel" type="button" (click)="cancelEdit()">Cancel</button>
+       </div>
       </form>
     } @else {
       <h2>{{ post.title }}</h2>
@@ -13,12 +22,11 @@
       <div class="post-meta">
         <span>By: {{ post.authorName }}</span>
         <span>Created: {{ post.createdAt  }}</span>
-        <span>Updated: {{ post.updatedAt }}</span>
       </div>
       @if (currentUserId === post.authorId) {
         <div class="post-actions">
-          <button (click)="startEdit()">Edit</button>
-          <button (click)="deletePost()">Delete</button>
+          <i class="fa-regular fa-pen-to-square" style="color: #ffffff;"  (click)="startEdit()"></i>
+          <i class="fa-solid fa-trash" style="color: #FC4747;" (click)="deletePost()"></i>
         </div>
       }
     }
