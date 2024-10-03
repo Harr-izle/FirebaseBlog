@@ -1,16 +1,20 @@
+
 <div class="comments-section">
     <h3>Comments</h3>
     @if (comments$ | async; as comments) {
       @for (comment of comments; track comment.id) {
         <div class="comment">
-          <p>{{ comment.content }}</p>
+          <div class="com">
+            <p>{{ comment.content }}</p>
+            @if (currentUserId === comment.authorId) {
+              <i class="fa-solid fa-trash" style="color: #FC4747;"(click)="deleteComment(comment.id)"></i>
+            }
+
+          </div>
           <div class="comment-meta">
             <span>By: {{ comment.authorName }}</span>
             <span>Created: {{ comment.createdAt | date }}</span>
           </div>
-          @if (currentUserId === comment.authorId) {
-            <button (click)="deleteComment(comment.id)">Delete</button>
-          }
         </div>
       }
     } @else {
@@ -20,7 +24,7 @@
     @if (currentUserId) {
       <form [formGroup]="commentForm" (ngSubmit)="addComment()">
         <textarea formControlName="content" placeholder="Write a comment..."></textarea>
-        <button type="submit" [disabled]="!commentForm.valid">Add Comment</button>
+        <button class="btn-comment"  type="submit" [disabled]="!commentForm.valid">Add Comment</button>
       </form>
     } @else {
       <p>Please log in to add a comment.</p>

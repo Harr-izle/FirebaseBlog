@@ -5,11 +5,13 @@ import { catchError, Observable, of, tap } from 'rxjs';
 import { IComment } from '../../../models/comment';
 import { AuthService } from '../../../services/auth/auth.service';
 import { BlogpostService } from '../../../services/blogpost/blogpost.service';
+import { RouterModule } from '@angular/router';
+
 
 @Component({
   selector: 'app-comment',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule,RouterModule],
   templateUrl: './comment.component.html',
   styleUrl: './comment.component.css'
 })
@@ -22,7 +24,8 @@ export class CommentComponent {
   constructor(
     private blogService: BlogpostService,
     private authService: AuthService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    
   ) {
     this.commentForm = this.fb.group({
       content: ['', Validators.required]
@@ -76,4 +79,5 @@ export class CommentComponent {
       ).subscribe();
     }
   }
+
 }
