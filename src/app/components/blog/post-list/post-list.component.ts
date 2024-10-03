@@ -6,6 +6,7 @@ import { Router, RouterModule } from '@angular/router';
 import { IPost } from '../../../models/post';
 import { AuthService } from '../../../services/auth/auth.service';
 import { BlogpostService } from '../../../services/blogpost/blogpost.service';
+import { log } from 'console';
 
 @Component({
   selector: 'app-post-list',
@@ -15,6 +16,7 @@ import { BlogpostService } from '../../../services/blogpost/blogpost.service';
   styleUrls: ['./post-list.component.css']
 })
 export class PostListComponent implements OnInit {
+ 
   postsWithComments$!: Observable<(IPost & { commentCount: number })[]>;
   currentUserId: string | null = null;
   postForm: FormGroup;

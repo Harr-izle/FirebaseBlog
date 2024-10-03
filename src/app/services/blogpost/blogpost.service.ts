@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Firestore, collection, collectionData, doc, docData, addDoc, updateDoc, deleteDoc, query, where, orderBy, Timestamp } from '@angular/fire/firestore';
 import { Observable, from } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
 import { IPost } from '../../models/post';
 import { IComment } from '../../models/comment';
 
@@ -34,6 +34,7 @@ export class BlogpostService {
   }
 
   addPost(post: Omit<IPost, 'id' | 'createdAt' | 'updatedAt'>): Observable<string> {
+    console.log('hey')
     const postsCollection = collection(this.firestore, 'posts');
     const newPost = {
       ...post,
@@ -41,7 +42,8 @@ export class BlogpostService {
       updatedAt: Timestamp.now()
     };
     return from(addDoc(postsCollection, newPost)).pipe(
-      map(docRef => docRef.id)
+      map(docRef => docRef.id),
+      tap(() => 'Harry')
     );
   }
 
@@ -78,6 +80,7 @@ export class BlogpostService {
   }
 
   addComment(comment: Omit<IComment, 'id' | 'createdAt' | 'updatedAt'>): Observable<string> {
+
     const commentsCollection = collection(this.firestore, 'comments');
     const newComment = {
       ...comment,

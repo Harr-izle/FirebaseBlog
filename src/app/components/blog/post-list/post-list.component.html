@@ -1,11 +1,18 @@
+<nav>
+  <h6>Q-Post</h6>
+  <div (click)="navigateToProfile()">
+    <i class="fa fa-user" aria-hidden="true"></i>
+  </div>
+</nav>
+
 <div class="posts-container">
-  <h2>All Posts</h2>
+  <h2>What's on your mind?</h2>
   
   @if (currentUserId) {
     <form [formGroup]="postForm" (ngSubmit)="createPost()">
       <input formControlName="title" placeholder="Post Title">
       <textarea formControlName="content" placeholder="Post Content"></textarea>
-      <button type="submit" [disabled]="!postForm.valid">Create Post</button>
+      <button class="btn-create" type="submit" [disabled]="!postForm.valid">Create Post</button>
     </form>
   }
 
@@ -13,11 +20,17 @@
     @for (post of posts; track post.id) {
       <div class="post-card">
         <h3>{{ post.title }}</h3>
-        <p>{{ post.content | slice:0:100 }}...</p>
+        <p>{{ post.content | slice:0:100 }}</p>
         <div class="post-meta">
           <span>By: {{ post.authorName }}</span>
           <span>Created: {{ post.createdAt | date }}</span>
-          <span>Comments: {{ post.commentCount }}</span>
+          <div class="icons">
+            <h6><i class="fa fa-comment-o" aria-hidden="true"></i> {{ post.commentCount }}</h6>
+            <i class="fa-solid fa-heart" style="color: #FC4747;"></i>
+            <i class="fa-solid fa-thumbs-up" style="color: #FFFF"></i>
+            <i class="fa-solid fa-retweet" style="color: #ffffff;"></i>
+            <i class="fa-solid fa-share" style="color: #f5f5f5;"></i>
+          </div>
         </div>
         <div class="post-actions">
           <a [routerLink]="['/post', post.id]">Read More</a>
@@ -28,6 +41,3 @@
     <p>Loading posts...</p>
   }
 </div>
-<button (click)="navigateToProfile()">
-  <i class="fas fa-user"></i> My Profile
-</button>
