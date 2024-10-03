@@ -1,0 +1,151 @@
+.form{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-top: 5rem;
+
+}
+form{
+    width: 25rem;
+    height: 24rem;
+    background-color: #161d2f;
+    padding: 2rem 2rem;
+    border-radius: 1rem;
+}
+h6{
+    color: #ffffff;
+    text-align: center;
+    font-size: 1.5rem;
+}
+.email{
+    margin-top: 1rem;
+   
+}
+.email input{
+    width: 21rem;
+    height: 2.5rem;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    border: none;
+    border-bottom:2px solid #161d2f;
+    background: transparent;
+    color: #ffffff;
+  
+}
+.email input:focus{
+    outline: none;
+    border-bottom:2px solid #161d2f;
+}
+
+.password{
+    margin-top: 1rem;
+}
+.password input{
+    width: 21rem;
+    height: 2.5rem;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    border: none;
+    border-bottom:2px solid #161d2f;
+    background: transparent;
+    color: #ffffff;
+  
+}
+.password input:focus{
+    outline: none;
+    border-bottom:2px solid #161d2f;
+}
+.submit{
+    margin-top: 1rem;
+    
+}
+.btn-login{
+    width: 21rem;
+    height: 2.5rem;
+    background-color: #FC4747;
+    color: #ffffff;
+    font-size: 1rem;
+    border: none;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease-in-out;
+}
+.google-signin{
+    margin-top: 1rem;
+    display: flex;
+    align-items: center;
+    
+}
+.google{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    width: 21rem;
+    height: 2.5rem;
+    background-color: #FFFFFF;
+    color: #161d2f;
+    font-size: 1rem;
+    border: none;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease-in-out;
+}
+.signup{
+    margin-top: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.signup p{
+    color: #ffffff;
+    font-size: 1rem;
+}
+.signup a{
+    color: #FC4747;
+    font-size: 1rem;
+    cursor: pointer;
+    text-decoration: none;
+}
+.forgot-password{
+    margin-top: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+ .forgot-password p{
+    color: #ffffff;
+    font-size: 1rem;
+}
+ .forgot-password a{
+    color: #FC4747;
+    font-size: 1rem;
+    cursor: pointer;
+    text-decoration: none;
+}
+.message{
+    position: absolute;
+    top: 60px;
+    left: 550px;
+}
+
+.message p {
+    font-size: 1rem; 
+    margin: 0;
+    padding: 0.5rem 1rem; 
+    border-radius: 0.25rem; 
+    transition: background-color 0.3s, color 0.3s; 
+}
+
+.message p.success {
+    background-color: #d4edda; 
+    color: #155724; 
+    border: 1px solid #c3e6cb; 
+}
+
+.message p.error {
+    background-color: #f8d7da; 
+    color: #721c24;
+    border: 1px solid #f5c6cb; 
+}
