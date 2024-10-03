@@ -18,26 +18,31 @@
 
   @if (postsWithComments$ | async; as posts) {
     @for (post of posts; track post.id) {
-      <div class="post-card">
-        <h3>{{ post.title }}</h3>
-        <p>{{ post.content | slice:0:100 }}</p>
-        <div class="post-meta">
-          <span>By: {{ post.authorName }}</span>
-          <span>Created: {{ post.createdAt | date }}</span>
-          <div class="icons">
-            <h6><i class="fa fa-comment-o" aria-hidden="true"></i> {{ post.commentCount }}</h6>
-            <i class="fa-solid fa-heart" style="color: #FC4747;"></i>
-            <i class="fa-solid fa-thumbs-up" style="color: #FFFF"></i>
-            <i class="fa-solid fa-retweet" style="color: #ffffff;"></i>
-            <i class="fa-solid fa-share" style="color: #f5f5f5;"></i>
-          </div>
-        </div>
-        <div class="post-actions">
-          <a [routerLink]="['/post', post.id]">Read More</a>
+   <div class="posts">
+    <div class="post-card">
+      <h3>{{ post.title }}</h3>
+      <p>{{ post.content | slice:0:100 }}</p>
+      <div class="post-meta">
+        <span>By: {{ post.authorName }}</span>
+        <span>Created: {{ post.createdAt | date }}</span>
+        <div class="icons">
+          <h6><i class="fa fa-comment-o" aria-hidden="true"></i> {{ post.commentCount }}</h6>
+          <i class="fa-solid fa-heart" style="color: #FC4747;"></i>
+          <i class="fa-solid fa-thumbs-up" style="color: #FFFF"></i>
+          <i class="fa-solid fa-retweet" style="color: #ffffff;"></i>
+          <i class="fa-solid fa-share" style="color: #f5f5f5;"></i>
         </div>
       </div>
+      <div class="post-actions">
+        <a [routerLink]="['/post', post.id]">Read More</a>
+      </div>
+    </div>
+   </div>
     }
   } @else {
-    <p>Loading posts...</p>
+    <div class="load">
+      <div class="spinner"></div>
+    </div>
+    
   }
 </div>
