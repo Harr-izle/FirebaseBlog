@@ -98,4 +98,9 @@ export class PostComponent {
       }
     });
   }
+
+  
+  navigateToProfile() {
+    this.router.navigate(['/profile']);
+  }
 }

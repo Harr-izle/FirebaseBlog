@@ -17,8 +17,8 @@
   }
 
   @if (postsWithComments$ | async; as posts) {
+    <div class="posts">
     @for (post of posts; track post.id) {
-   <div class="posts">
     <div class="post-card">
       <h3>{{ post.title }}</h3>
       <p>{{ post.content | slice:0:100 }}</p>
@@ -37,8 +37,8 @@
         <a [routerLink]="['/post', post.id]">Read More</a>
       </div>
     </div>
-   </div>
-    }
+  }
+</div>
   } @else {
     <div class="load">
       <div class="spinner"></div>
