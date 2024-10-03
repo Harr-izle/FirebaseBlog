@@ -50,7 +50,7 @@ export class AuthService {
       console.error("Registration failed:", error);
       return throwError(() => ({
         success: false,
-        message: "Registration failed. Please try again."
+        message: "Registration failed. Email already exists."
       }));
     })
   );
@@ -71,7 +71,7 @@ export class AuthService {
         console.error("Login failed:", error);
         return throwError(() => ({
           success: false,
-          message: "Login failed. Please check your credentials and try again."
+          message: "Login failed. Account does not exist."
         }));
       })
     );
