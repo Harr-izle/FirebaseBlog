@@ -1,6 +1,12 @@
 <div class="form">
     <form [formGroup]="form">
-        <h6>Login</h6>
+        @if(!showResetPassword){
+            <h6>Login</h6>
+        }@else {
+            <h6>Reset Password</h6>
+        }
+
+      
         <div class="email">
             <input type="email" formControlName="email" id="email" placeholder="Email">
         </div>
@@ -25,7 +31,7 @@
         </div>
 
         <div class="reset-password" *ngIf="showResetPassword">
-            <button type="button" (click)="resetPassword()">Reset Password</button>
+            <button class="btn-reset" type="button" (click)="resetPassword()">Reset Password</button>
             <p><a  (click)="showResetPassword = false">Back to Login</a></p>
         </div>
 

@@ -71,6 +71,10 @@ h6{
     cursor: pointer;
     transition: background-color 0.3s ease-in-out;
 }
+.btn-login:hover{
+    background-color: #FFFFFF;
+    color: #161d2f;
+}
 .google-signin{
     margin-top: 1rem;
     display: flex;
@@ -91,6 +95,11 @@ h6{
     border-radius: 0.5rem;
     cursor: pointer;
     transition: background-color 0.3s ease-in-out;
+}
+
+.google:hover{
+    background-color: #161d2f;
+    color: #FFFFFF;
 }
 .signup{
     margin-top: 1rem;
@@ -123,6 +132,40 @@ h6{
     font-size: 1rem;
     cursor: pointer;
     text-decoration: none;
+}
+.reset-password{
+    margin-top: 1rem;
+    display: flex;
+    flex-direction: column;
+}
+.btn-reset{
+    width: 21rem;
+    height: 2.5rem;
+    background-color: #FC4747;
+    color: #ffffff;
+    font-size: 1rem;
+    border: none;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease-in-out;
+}
+
+.btn-reset:hover{
+    background-color: #FFFFFF;
+    color: #161d2f;
+}
+.reset-password p{
+    color: #ffffff;
+    font-size: 1rem;
+    margin-top: 1rem;
+}
+
+.reset-password a{
+    color: #FC4747;
+    font-size: 1rem;
+    cursor: pointer;
+    text-decoration: none;
+    margin-top: 1rem;
 }
 .message{
     position: absolute;
