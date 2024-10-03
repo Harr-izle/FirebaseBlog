@@ -1,19 +1,16 @@
 <div class="form">
-    <h6>Signup</h6>
     <form [formGroup]="form">
+      <h6>Signup</h6>
       <div class="email">
-        <label for="email">Email</label>
-        <input type="email" formControlName="email" id="email">
+        <input type="email" formControlName="email" id="email" placeholder="Email">
       </div>
   
       <div class="password">
-        <label for="password">Password</label>
-        <input type="password" formControlName="password" id="password">
+        <input type="password" formControlName="password" id="password" placeholder="Password">
       </div>
   
-      <div class="confirm-password">
-        <label for="confirmPassword">Confirm Password</label>
-        <input type="password" formControlName="confirmPassword" id="confirmPassword">
+      <div class="password">
+        <input type="password" formControlName="confirmPassword" id="confirmPassword" placeholder="Confirm Password">
         <!-- Show error message if passwords do not match -->
         <div *ngIf="form.errors?.['mismatch']" class="error">
           Passwords do not match.
@@ -21,16 +18,18 @@
       </div>
   
       <div class="submit">
-        <button type="submit" (click)="signUp()">Sign Up</button>
+        <button class="btn-signup" type="submit" (click)="signUp()">Sign Up</button>
       </div>
   
       <div class="forgot-password">
         <p>Already have an account? <a [routerLink]="['/login']">Login</a></p>
       </div>
   
-      <div *ngIf="message" [class.error]="isError" [class.success]="!isError">
-        {{ message }}
-      </div>
+      @if(message){
+        <div class="message">
+          <p [class.error]="isError" [class.success]="!isError">{{ message }}</p>
+        </div>
+      }
     </form>
   </div>
   
