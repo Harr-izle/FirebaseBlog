@@ -1,8 +1,7 @@
-import { Component } from '@angular/core';
-import {Router, RouterLink} from '@angular/router';
-
+import { Component, OnInit } from '@angular/core';
+import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth/auth.service';
-import { Observable, map } from 'rxjs';
+import { Observable, combineLatest, map, of } from 'rxjs';
 import { IPost } from '../../models/post';
 import { BlogpostService } from '../../services/blogpost/blogpost.service';
 import { CommonModule } from '@angular/common';
@@ -10,14 +9,14 @@ import { CommonModule } from '@angular/common';
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [CommonModule,RouterLink],
+  imports: [CommonModule, RouterLink],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.css'
 })
-export class ProfileComponent {
+export class ProfileComponent  {
   user$: Observable<any>;
   userInfo: { key: string, value: string }[] = [];
-  userPosts$: Observable<IPost[]>;
+  userPostsWithComments$: Observable<(IPost & { commentCount: number })[]>;
 
   constructor(
     private authService: AuthService,
@@ -25,18 +24,24 @@ export class ProfileComponent {
     private router: Router
   ) {
     this.user$ = this.authService.getCurrentUser();
-    this.userPosts$ = new Observable<IPost[]>();
+    this.userPostsWithComments$ = of([]);
   }
 
   ngOnInit() {
-    this.user$.subscribe((user: { uid: string;  }) => {
+    this.user$.subscribe((user: { uid: string }) => {
       if (user) {
-        this.userInfo = [
-          { key: 'UID', value: user.uid },
-         
-        ];
-        this.userPosts$ = this.blogService.getPosts().pipe(
-          map((posts: any[]) => posts.filter((post: { authorId: any; }) => post.authorId === user.uid))
+        this.userPostsWithComments$ = combineLatest([
+          this.blogService.getPosts(),
+          this.blogService.getAllComments()
+        ]).pipe(
+          map(([posts, comments]) => 
+            posts
+              .filter(post => post.authorId === user.uid)
+              .map(post => ({
+                ...post,
+                commentCount: comments.filter(comment => comment.postId === post.id).length
+              }))
+          )
         );
       } else {
         this.router.navigate(['/login']);
@@ -54,6 +59,4 @@ export class ProfileComponent {
       }
     });
   }
-  }
-
-
+}

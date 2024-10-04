@@ -1,26 +1,33 @@
+<nav>
+  <h6 [routerLink]="['']">Q-Post</h6>
+  <i class="fa-solid fa-right-from-bracket" style="color: #fcfcfd;" (click)="logout()"><span>logout</span></i>
+</nav>
+
 <div class="profile-container">
-  <h2>Welcome, {{ (user$ | async)?.displayName || (user$ | async)?.email }}</h2>
+  <h2>Welcome, User</h2>
   <p>Email: {{ (user$ | async)?.email }}</p>
-  
-
-  <h3>User Information</h3>
-  <ul>
-    @for (info of userInfo; track info.key) {
-      <li>{{ info.key }}: {{ info.value }}</li>
-    }
-  </ul>
-
   <h3>Your Posts</h3>
-  @if (userPosts$ | async; as posts) {
-    @for (post of posts; track post.id) {
-      <div class="post-card">
-        <h4>{{ post.title }}</h4>
-        <a [routerLink]="['/post', post.id]">Read More</a>
+  @if ((userPostsWithComments$ | async)?.length) {
+    @for (post of userPostsWithComments$ | async; track post.id) {
+      <div class="post-post">
+        <div class="posts-card">
+          <h3>{{ post.title }}</h3>
+          <p>{{ post.content | slice:0:100 }}</p>
+          <div class="icons">
+            <h6><i class="fa fa-comment-o" aria-hidden="true"></i> {{ post.commentCount }}</h6>
+            <i class="fa-solid fa-heart" style="color: #FC4747;"></i>
+            <i class="fa-solid fa-thumbs-up" style="color: #FFFF"></i>
+            <i class="fa-solid fa-retweet" style="color: #ffffff;"></i>
+            <i class="fa-solid fa-share" style="color: #f5f5f5;"></i>
+          </div>
+          <a [routerLink]="['/post', post.id]">Read More</a>
+        </div>
       </div>
     }
   } @else {
-    <p>You haven't created any posts yet.</p>
+    <div class="message">
+      <p>You haven't created any posts yet.</p>
+      <i class="fa-regular fa-face-frown-open fa-lg" style="color: #FC4747;"></i>
+    </div>
   }
-
-  <button (click)="logout()">Logout</button>
 </div>
