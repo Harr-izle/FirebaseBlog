@@ -29,6 +29,8 @@
       <button class="btn-comment" type="submit" [disabled]="!commentForm.valid">Add Comment</button>
     </form>
   } @else {
-    <p>Please log in to add a comment.</p>
+  <div class="mes">
+    <p>Please log in to add a comment. <a [routerLink]="['/login']">Login</a> </p>
+  </div>
   }
 </div>

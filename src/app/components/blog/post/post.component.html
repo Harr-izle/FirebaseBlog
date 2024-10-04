@@ -11,10 +11,10 @@
       <form [formGroup]="editForm" (ngSubmit)="updatePost()">
         <input formControlName="title" placeholder="Title">
         <textarea formControlName="content" placeholder="Content"></textarea>
-       <div class="buttons">
-        <button class="btn-edit" type="submit">Update Post</button>
-        <button class="btn-cancel" type="button" (click)="cancelEdit()">Cancel</button>
-       </div>
+        <div class="buttons">
+          <button class="btn-edit" type="submit">Update Post</button>
+          <button class="btn-cancel" type="button" (click)="cancelEdit()">Cancel</button>
+        </div>
       </form>
     } @else {
       <h2>{{ post.title }}</h2>
