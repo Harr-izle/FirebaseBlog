@@ -46,7 +46,7 @@ export class CommentComponent {
         postId: this.postId,
         content: this.commentForm.value.content,
         authorId: this.currentUserId,
-        authorName: 'Current User', // You might want to get the actual user name
+        authorName: 'User', 
         createdAt: new Date(),
         updatedAt: new Date()
       };
