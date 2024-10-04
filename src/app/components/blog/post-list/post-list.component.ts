@@ -57,7 +57,7 @@ export class PostListComponent implements OnInit {
         title: this.postForm.value.title,
         content: this.postForm.value.content,
         authorId: this.currentUserId,
-        authorName: 'Current User', 
+        authorName: 'User', 
         createdAt: new Date(),
         updatedAt: new Date()
       };
