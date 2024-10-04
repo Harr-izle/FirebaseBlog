@@ -15,13 +15,14 @@
       <button class="btn-create" type="submit" [disabled]="!postForm.valid">Create Post</button>
     </form>
   }
-
+  <h5>Posts</h5>
   @if (postsWithComments$ | async; as posts) {
     <div class="posts">
+    
     @for (post of posts; track post.id) {
     <div class="post-card">
       <h3>{{ post.title }}</h3>
-      <p>{{ post.content | slice:0:100 }}</p>
+      <p>{{ post.content | slice:0:20 }}....</p>
       <div class="post-meta">
         <span>By: {{ post.authorName }}</span>
         <span>Created: {{ post.createdAt | date }}</span>
